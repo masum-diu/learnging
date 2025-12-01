@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Link from 'next/link';
 import {
   AppBar,
   Toolbar,
@@ -119,7 +118,7 @@ export default function Home() {
       name: 'Sarah Ahmed',
       avatar: 'SA',
       rating: 5,
-      text: 'This course completely transformed my English skills! Highly recommended!',
+      text: 'This course completely transformed my English skills! ',
       location: '🇧🇩 Bangladesh',
     },
     {
@@ -143,57 +142,7 @@ export default function Home() {
       <CssBaseline />
       <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
         {/* Navigation Bar */}
-        <AppBar position="sticky" elevation={0} sx={{ borderBottom: '1px solid #e0e0e0' }}>
-          <Container maxWidth="lg">
-            <Toolbar disableGutters>
-              <SchoolIcon sx={{ mr: 1, fontSize: 28 }} />
-              <Typography variant="h6" sx={{ fontWeight: 'bold', flex: 1 }}>
-                Learn English
-              </Typography>
-              <Stack direction="row" spacing={2} sx={{ display: { xs: 'none', sm: 'flex' } }}>
-                <Button color="inherit" href="#courses">
-                  Courses
-                </Button>
-                <Button color="inherit" href="#features">
-                  Features
-                </Button>
-                <Button color="inherit" href="/gamers">
-                  🎮 Gamers
-                </Button>
-                <Button color="inherit" href="#about">
-                  About
-                </Button>
-                <Button color="inherit" href="/admin/login" sx={{ fontWeight: 'bold' }}>
-                  ⚙️ Admin
-                </Button>
-                <Button color="inherit" variant="outlined">
-                  Login
-                </Button>
-                <Button variant="contained" color="secondary">
-                  Sign Up
-                </Button>
-              </Stack>
-              <IconButton
-                onClick={(e) => setMobileMenuOpen(e.currentTarget)}
-                sx={{ display: { xs: 'flex', sm: 'none' } }}
-                color="inherit"
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                anchorEl={mobileMenuOpen}
-                open={Boolean(mobileMenuOpen)}
-                onClose={() => setMobileMenuOpen(null)}
-              >
-                <MenuItem href="#courses">Courses</MenuItem>
-                <MenuItem href="#features">Features</MenuItem>
-                <MenuItem href="/gamers">🎮 Gamers</MenuItem>
-                <MenuItem href="#about">About</MenuItem>
-                <MenuItem href="/admin/login">⚙️ Admin</MenuItem>
-              </Menu>
-            </Toolbar>
-          </Container>
-        </AppBar>
+    
 
         {/* Hero Section */}
         <Box
@@ -219,10 +168,11 @@ export default function Home() {
               height: '100%',
               objectFit: 'cover',
               zIndex: 0,
+              objectPosition:"top",
             }}
           >
             <source 
-              src="ass"
+              src="assets/english-learning-hero.mp4"
               type="video/mp4" 
             />
           </Box>
@@ -272,9 +222,7 @@ export default function Home() {
                   </Box>
                 </Stack>
               </Grid>
-              <Grid item xs={12} md={6} sx={{ textAlign: 'center' }}>
-                <Typography variant="h1">📚</Typography>
-              </Grid>
+             
             </Grid>
           </Container>
         </Box>
@@ -289,7 +237,7 @@ export default function Home() {
           </Typography>
           <Grid container spacing={3}>
             {courses.map((course) => (
-              <Grid item xs={12} sm={6} md={4} key={course.id}>
+              <Grid item size={{ xs: 12, md: 4 }}key={course.id}>
                 <Card
                   sx={{
                     height: '100%',
@@ -355,7 +303,7 @@ export default function Home() {
             </Typography>
             <Grid container spacing={3}>
               {features.map((feature, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index}>
+                <Grid item size={{ xs: 12, md: 4 }} key={index}>
                   <Card sx={{ height: '100%', textAlign: 'center' }}>
                     <CardContent>
                       <Box sx={{ color: 'primary.main', mb: 2 }}>
@@ -442,7 +390,7 @@ export default function Home() {
             </Typography>
             <Grid container spacing={3}>
               {testimonials.map((testimonial, index) => (
-                <Grid item xs={12} md={4} key={index}>
+                <Grid size={{ xs: 12, md: 4 }}key={index}>
                   <Paper sx={{ p: 3, bgcolor: 'rgba(255,255,255,0.1)', color: 'white' }}>
                     <Rating value={testimonial.rating} readOnly sx={{ mb: 1, color: '#ffd700' }} />
                     <Typography sx={{ mb: 2, fontStyle: 'italic' }}>
