@@ -227,7 +227,7 @@ export default function Home() {
           </Container>
         </Box>
 
-        {/* Courses Section */}
+        {/* Courses Section (modern cards) */}
         <Container maxWidth="lg" sx={{ py: 8 }} id="courses">
           <Typography variant="h3" sx={{ mb: 1, textAlign: 'center' }}>
             Our Popular Courses
@@ -235,64 +235,70 @@ export default function Home() {
           <Typography sx={{ mb: 4, textAlign: 'center', color: 'text.secondary' }}>
             Choose the perfect course for your English learning journey
           </Typography>
-          <Grid container spacing={3}>
+
+          <Grid container spacing={4}>
             {courses.map((course) => (
-              <Grid item size={{ xs: 12, md: 4 }}key={course.id}>
+              <Grid item xs={12} sm={6} md={4} key={course.id}>
                 <Card
                   sx={{
                     height: '100%',
                     display: 'flex',
                     flexDirection: 'column',
-                    boxShadow: course.popular ? '0 10px 40px rgba(102, 126, 234, 0.3)' : 1,
-                    transform: course.popular ? 'scale(1.05)' : 'scale(1)',
-                    transition: 'transform 0.3s, box-shadow 0.3s',
-                    '&:hover': {
-                      transform: 'translateY(-8px)',
-                      boxShadow: 3,
-                    },
+                    borderRadius: 3,
+                    position: 'relative',
+                    overflow: 'hidden',
+                    boxShadow: 2,
+                    transition: 'transform 250ms ease, box-shadow 250ms ease',
+                    '&:hover': { transform: 'translateY(-8px)', boxShadow: 6 },
+                    bgcolor: 'background.paper',
                   }}
                 >
+                  {/* Price badge */}
+                  <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}>
+                    <Paper elevation={3} sx={{ px: 2, py: 0.5, bgcolor: 'primary.main', color: 'white', borderRadius: 2 }}>
+                      <Typography sx={{ fontWeight: 'bold' }}>${course.price}</Typography>
+                    </Paper>
+                  </Box>
+
+                  {/* Ribbon for popular */}
                   {course.popular && (
-                    <Alert severity="warning" sx={{ m: 2, mb: 0 }}>
-                      ⭐ Most Popular
-                    </Alert>
+                    <Box sx={{ position: 'absolute', left: 0, top: 12, zIndex: 2 }}>
+                      <Paper elevation={0} sx={{ px: 2, py: 0.5, bgcolor: 'secondary.main', color: 'white', borderTopRightRadius: 8, borderBottomRightRadius: 8 }}>
+                        <Typography variant="caption" sx={{ fontWeight: 'bold' }}>Most Popular</Typography>
+                      </Paper>
+                    </Box>
                   )}
-                  <CardContent sx={{ flex: 1 }}>
-                    <Typography variant="h1" sx={{ mb: 1 }}>
-                      {course.image}
-                    </Typography>
-                    <Typography variant="h5" sx={{ mb: 1 }}>
-                      {course.name}
-                    </Typography>
-                    <Typography color="secondary" sx={{ mb: 2, fontWeight: 'bold' }}>
-                      {course.level}
-                    </Typography>
+
+                  <CardContent sx={{ flex: 1, pt: 6 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                      <Avatar sx={{ bgcolor: 'primary.light', width: 64, height: 64, fontSize: 28 }}>{course.image}</Avatar>
+                      <Box>
+                        <Typography variant="h6" sx={{ fontWeight: 700 }}>{course.name}</Typography>
+                        <Typography variant="caption" color="text.secondary">{course.level}</Typography>
+                      </Box>
+                    </Box>
+
                     <Box sx={{ mb: 2 }}>
                       {course.features.map((feature, i) => (
-                        <Typography key={i} variant="body2" sx={{ mb: 0.5 }}>
-                          ✓ {feature}
+                        <Typography key={i} variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                          <Box component="span" sx={{ color: 'primary.main', mr: 1 }}>•</Box>
+                          {feature}
                         </Typography>
                       ))}
                     </Box>
-                    <Typography variant="h4" color="primary" sx={{ fontWeight: 'bold' }}>
-                      ${course.price}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {course.students} students enrolled
-                    </Typography>
+
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
+                      <Typography variant="body2" color="text.secondary">{course.students} students</Typography>
+                      <Button variant="contained" color="primary">Enroll Now</Button>
+                    </Box>
                   </CardContent>
-                  <CardActions>
-                    <Button fullWidth variant="contained" color="primary">
-                      Enroll Now
-                    </Button>
-                  </CardActions>
                 </Card>
               </Grid>
             ))}
           </Grid>
         </Container>
 
-        {/* Features Section */}
+        {/* Features Section (modern) */}
         <Box sx={{ bgcolor: '#f5f5f5', py: 8 }} id="features">
           <Container maxWidth="lg">
             <Typography variant="h3" sx={{ mb: 1, textAlign: 'center' }}>
@@ -301,20 +307,50 @@ export default function Home() {
             <Typography sx={{ mb: 4, textAlign: 'center', color: 'text.secondary' }}>
               Everything you need for English mastery
             </Typography>
-            <Grid container spacing={3}>
+
+            <Grid container spacing={4}>
               {features.map((feature, index) => (
-                <Grid item size={{ xs: 12, md: 4 }} key={index}>
-                  <Card sx={{ height: '100%', textAlign: 'center' }}>
-                    <CardContent>
-                      <Box sx={{ color: 'primary.main', mb: 2 }}>
-                        {React.cloneElement(feature.icon, { sx: { fontSize: 40 } })}
+                <Grid item size={{ xs: 12, md: 4 }}key={index}>
+                  <Card
+                    elevation={1}
+                    sx={{
+                      height: '100%',
+                      display: 'flex',
+                      alignItems: 'stretch',
+                      borderRadius: 3,
+                      transition: 'transform 200ms ease, box-shadow 200ms ease',
+                      '&:hover': { transform: 'translateY(-8px)', boxShadow: 6 },
+                    }}
+                  >
+                    <CardContent sx={{ width: '100%', textAlign: 'center', p: 4 }}>
+                      <Box
+                        sx={{
+                          width: 80,
+                          height: 80,
+                          mx: 'auto',
+                          mb: 2,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: 2,
+                          bgcolor: 'primary.main',
+                          color: 'white',
+                          boxShadow: 3,
+                        }}
+                      >
+                        {React.cloneElement(feature.icon, { sx: { fontSize: 36 } })}
                       </Box>
-                      <Typography variant="h6" sx={{ mb: 1 }}>
+
+                      <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
                         {feature.title}
                       </Typography>
-                      <Typography color="text.secondary">
+                      <Typography color="text.secondary" sx={{ mb: 2 }}>
                         {feature.description}
                       </Typography>
+
+                      <Button size="small" variant="text" color="primary">
+                        Learn more
+                      </Button>
                     </CardContent>
                   </Card>
                 </Grid>
@@ -323,58 +359,70 @@ export default function Home() {
           </Container>
         </Box>
 
-        {/* About Section */}
+        {/* About Section (modern) */}
         <Container maxWidth="lg" sx={{ py: 8 }} id="about">
-          <Grid container spacing={4} alignItems="center">
-            <Grid item xs={12} md={6} sx={{ textAlign: 'center' }}>
-              <Typography variant="h1" sx={{ mb: 2 }}>
-                🏢
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
+          <Grid container spacing={6} alignItems="center">
+            {/* Left: Illustration / Visual */}
+           
+
+            {/* Right: Content */}
+            <Grid size={{ xs: 12, md: 12 }}>
               <Typography variant="h3" sx={{ mb: 2 }}>
                 About Learn English Academy
               </Typography>
-              <Typography sx={{ mb: 2 }}>
-                Founded in 2020, Learn English Academy has been dedicated to helping millions of students worldwide achieve their English language goals.
+              <Typography sx={{ mb: 2, color: 'text.secondary' }}>
+                Founded in 2020, we empower learners worldwide to gain confidence and fluency through structured courses, expert instructors, and a supportive community.
               </Typography>
-              <Typography sx={{ mb: 3 }}>
-                We believe that everyone deserves access to quality education. Our mission is to make English learning accessible, affordable, and effective.
-              </Typography>
-              <Grid container spacing={2}>
+
+              <Grid container spacing={2} sx={{ mb: 3 }}>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+                    <Avatar sx={{ bgcolor: 'primary.main' }}>👨‍🏫</Avatar>
+                    <Box>
+                      <Typography sx={{ fontWeight: 700 }}>Expert Instructors</Typography>
+                      <Typography variant="caption" color="text.secondary">Certified teachers & personalized feedback</Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+                    <Avatar sx={{ bgcolor: 'secondary.main' }}>⏱️</Avatar>
+                    <Box>
+                      <Typography sx={{ fontWeight: 700 }}>Flexible Learning</Typography>
+                      <Typography variant="caption" color="text.secondary">Self-paced modules & live sessions</Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={2} sx={{ mb: 3 }}>
                 <Grid item xs={6}>
                   <Paper sx={{ p: 2, textAlign: 'center' }}>
-                    <Typography variant="h5" color="primary">
-                      2020
-                    </Typography>
-                    <Typography>Founded</Typography>
+                    <Typography variant="h5" color="primary" sx={{ fontWeight: 800 }}>2020</Typography>
+                    <Typography variant="caption">Founded</Typography>
                   </Paper>
                 </Grid>
                 <Grid item xs={6}>
                   <Paper sx={{ p: 2, textAlign: 'center' }}>
-                    <Typography variant="h5" color="primary">
-                      45+
-                    </Typography>
-                    <Typography>Countries</Typography>
+                    <Typography variant="h5" color="primary" sx={{ fontWeight: 800 }}>45+</Typography>
+                    <Typography variant="caption">Countries</Typography>
                   </Paper>
                 </Grid>
                 <Grid item xs={6}>
                   <Paper sx={{ p: 2, textAlign: 'center' }}>
-                    <Typography variant="h5" color="primary">
-                      95%
-                    </Typography>
-                    <Typography>Success Rate</Typography>
+                    <Typography variant="h5" color="primary" sx={{ fontWeight: 800 }}>95%</Typography>
+                    <Typography variant="caption">Success Rate</Typography>
                   </Paper>
                 </Grid>
                 <Grid item xs={6}>
                   <Paper sx={{ p: 2, textAlign: 'center' }}>
-                    <Typography variant="h5" color="primary">
-                      4.9★
-                    </Typography>
-                    <Typography>Rating</Typography>
+                    <Typography variant="h5" color="primary" sx={{ fontWeight: 800 }}>4.9★</Typography>
+                    <Typography variant="caption">Rating</Typography>
                   </Paper>
                 </Grid>
               </Grid>
+
+              <Button variant="contained" color="primary">Explore Courses</Button>
             </Grid>
           </Grid>
         </Container>
