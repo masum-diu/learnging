@@ -1,22 +1,10 @@
-// Use SQLite for persistence via lib/db/courses.js
-let dbModule = null;
-let initError = null;
-try {
-  dbModule = require('../../lib/db/courses');
-} catch (err) {
-  initError = err;
-  console.error('DB initialization error:', err);
-}
+// In-memory courses database for persistence
+import { getCourses, addCourse } from '../../lib/db/courses';
 
 export default function handler(req, res) {
-  if (!dbModule) {
-    const message = initError ? String(initError.message || initError) : 'Database not initialized. Run `npm install better-sqlite3`.';
-    console.error('Courses API request but DB not ready:', message);
-    return res.status(500).json({ success: false, error: message });
-  }
   if (req.method === 'GET') {
     try {
-      const data = dbModule.getCourses();
+      const data = getCourses();
       return res.status(200).json({ success: true, data });
     } catch (err) {
       console.error('GET /api/courses error:', err);
@@ -31,7 +19,7 @@ export default function handler(req, res) {
         return res.status(400).json({ success: false, error: 'Missing required fields' });
       }
 
-      const created = dbModule.addCourse({
+      const created = addCourse({
         name,
         level,
         duration,

@@ -1,6 +1,6 @@
-const dbModule = require('../../../lib/db/courses');
+import { getCourseById, updateCourse, deleteCourse } from '../../../lib/db/courses';
 
-// GET, UPDATE, or DELETE a specific course using the SQLite helper
+// GET, UPDATE, or DELETE a specific course using the in-memory helper
 export default function handler(req, res) {
   const { id } = req.query;
   const courseId = Number(id);
@@ -10,7 +10,7 @@ export default function handler(req, res) {
 
   if (req.method === 'GET') {
     try {
-      const course = dbModule.getCourseById(courseId);
+      const course = getCourseById(courseId);
       if (!course) return res.status(404).json({ success: false, error: 'Course not found' });
       return res.status(200).json({ success: true, data: course });
     } catch (err) {
@@ -34,7 +34,7 @@ export default function handler(req, res) {
         return res.status(400).json({ success: false, error: 'No valid fields to update' });
       }
 
-      const updated = dbModule.updateCourse(courseId, updateFields);
+      const updated = updateCourse(courseId, updateFields);
       if (!updated) return res.status(404).json({ success: false, error: 'Course not found' });
       return res.status(200).json({ success: true, data: updated });
     } catch (err) {
@@ -45,7 +45,7 @@ export default function handler(req, res) {
 
   if (req.method === 'DELETE') {
     try {
-      const ok = dbModule.deleteCourse(courseId);
+      const ok = deleteCourse(courseId);
       if (!ok) return res.status(404).json({ success: false, error: 'Course not found' });
       return res.status(200).json({ success: true });
     } catch (err) {
