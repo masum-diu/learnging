@@ -70,7 +70,7 @@ export default function Header() {
             <MenuItem onClick={handleMenuClose} component="a" href="#features">Features</MenuItem>
             <MenuItem onClick={handleMenuClose} component="a" href="/gamers">🎮 Gamers</MenuItem>
             <MenuItem onClick={handleMenuClose} component="a" href="#about">About</MenuItem>
-            <MenuItem onClick={handleMenuClose} component="a" href="/admin/login">⚙️ Admin</MenuItem>
+            <MenuItem onClick={handleMenuClose} component="a" href="/admin/login" target="_blank" rel="noopener noreferrer">⚙️ Admin</MenuItem>
             <MenuItem onClick={handleMenuClose} component="a" href="/login">Login</MenuItem>
            
           </Menu>

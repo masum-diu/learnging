@@ -251,7 +251,7 @@ function AdminDashboard() {
                 {/* Stats Grid */}
                 <Grid container spacing={3} sx={{ mb: 4 }}>
                   {stats.map((stat, index) => (
-                    <Grid item xs={12} sm={6} md={3} key={index}>
+                    <Grid  size={{ xs: 12, md: 3 }} key={index}>
                       <Card>
                         <CardContent>
                           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -273,7 +273,7 @@ function AdminDashboard() {
 
                 {/* Performance Metrics */}
                 <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <Card>
                       <CardContent>
                         <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
@@ -286,7 +286,7 @@ function AdminDashboard() {
                       </CardContent>
                     </Card>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <Card>
                       <CardContent>
                         <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
@@ -360,7 +360,7 @@ function AdminDashboard() {
                     { name: 'Beginner English (A1)', students: 234, price: 99 },
                     { name: 'Intermediate English (B1)', students: 156, price: 129 },
                   ].map((course, index) => (
-                    <Grid item xs={12} md={6} key={index}>
+                    <Grid size={{ xs: 12, md: 6 }} key={index}>
                       <Card>
                         <CardContent>
                           <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
