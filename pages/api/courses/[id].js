@@ -1,39 +1,59 @@
-// GET, UPDATE, or DELETE a specific course
+const dbModule = require('../../../lib/db/courses');
+
+// GET, UPDATE, or DELETE a specific course using the SQLite helper
 export default function handler(req, res) {
   const { id } = req.query;
+  const courseId = Number(id);
+  if (!courseId || Number.isNaN(courseId)) {
+    return res.status(400).json({ success: false, error: 'Invalid course id' });
+  }
 
   if (req.method === 'GET') {
-    // Mock data - replace with database query
-    const course = {
-      id: parseInt(id),
-      name: 'Beginner English',
-      level: 'A1',
-      duration: '8 weeks',
-      price: 99.99,
-      students: 15,
-      description: 'Perfect for absolute beginners',
-      lessons: 24,
-      instructor: 'John Smith',
-      startDate: '2025-01-15',
-    };
-
-    res.status(200).json({ success: true, data: course });
-  } else if (req.method === 'PUT') {
-    const { name, level, duration, price, description } = req.body;
-
-    const updatedCourse = {
-      id: parseInt(id),
-      name: name || 'Beginner English',
-      level: level || 'A1',
-      duration: duration || '8 weeks',
-      price: price || 99.99,
-      description: description || '',
-    };
-
-    res.status(200).json({ success: true, data: updatedCourse });
-  } else if (req.method === 'DELETE') {
-    res.status(200).json({ success: true, message: `Course ${id} deleted` });
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
+    try {
+      const course = dbModule.getCourseById(courseId);
+      if (!course) return res.status(404).json({ success: false, error: 'Course not found' });
+      return res.status(200).json({ success: true, data: course });
+    } catch (err) {
+      console.error('GET /api/courses/[id] error:', err);
+      return res.status(500).json({ success: false, error: String(err) });
+    }
   }
+
+  if (req.method === 'PUT' || req.method === 'PATCH') {
+    try {
+      const payload = req.body || {};
+      const allowed = ['name', 'level', 'duration', 'price', 'students', 'description'];
+      const updateFields = {};
+      for (const key of allowed) {
+        if (Object.prototype.hasOwnProperty.call(payload, key)) {
+          updateFields[key] = payload[key];
+        }
+      }
+
+      if (Object.keys(updateFields).length === 0) {
+        return res.status(400).json({ success: false, error: 'No valid fields to update' });
+      }
+
+      const updated = dbModule.updateCourse(courseId, updateFields);
+      if (!updated) return res.status(404).json({ success: false, error: 'Course not found' });
+      return res.status(200).json({ success: true, data: updated });
+    } catch (err) {
+      console.error('PUT /api/courses/[id] error:', err);
+      return res.status(500).json({ success: false, error: String(err) });
+    }
+  }
+
+  if (req.method === 'DELETE') {
+    try {
+      const ok = dbModule.deleteCourse(courseId);
+      if (!ok) return res.status(404).json({ success: false, error: 'Course not found' });
+      return res.status(200).json({ success: true });
+    } catch (err) {
+      console.error('DELETE /api/courses/[id] error:', err);
+      return res.status(500).json({ success: false, error: String(err) });
+    }
+  }
+
+  res.setHeader('Allow', ['GET', 'PUT', 'PATCH', 'DELETE']);
+  return res.status(405).json({ success: false, error: 'Method not allowed' });
 }

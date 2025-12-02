@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -32,6 +32,7 @@ import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import axios from 'axios';
 
 const theme = createTheme({
   palette: {
@@ -72,37 +73,25 @@ export default function Home() {
       setTimeout(() => setIsSubscribed(false), 3000);
     }
   };
-
-  const courses = [
-    {
-      id: 1,
-      name: 'Beginner English (A1)',
-      level: 'Beginner',
-      price: 99,
-      students: 234,
-      image: '🔤',
-      features: ['24 Lessons', 'Live Classes', 'Grammar Basics'],
-    },
-    {
-      id: 2,
-      name: 'Intermediate English (B1)',
-      level: 'Intermediate',
-      price: 129,
-      students: 156,
-      image: '📖',
-      features: ['30 Lessons', 'Business English', 'Speaking Practice'],
-      popular: true,
-    },
-    {
-      id: 3,
-      name: 'Advanced English (C1)',
-      level: 'Advanced',
-      price: 159,
-      students: 89,
-      image: '🎯',
-      features: ['36 Lessons', 'IELTS Prep', 'Academic Writing'],
-    },
-  ];
+  const [courses, setCourses] = useState(null)
+  const [loadingCourses, setLoadingCourses] = useState(false);
+  // Fetch courses when courses tab is active
+  useEffect(() => {
+   
+    const fetchCourses = async () => {
+      setLoadingCourses(true);
+      try {
+        const res = await axios.get('/api/courses');
+        if (res) setCourses(res.data.data || []);
+      } catch (err) {
+        console.error('Failed to fetch courses', err);
+      } finally {
+        setLoadingCourses(false);
+      }
+    };
+    fetchCourses();
+  
+  }, []);
 
   const features = [
     { icon: <PeopleIcon />, title: 'Expert Instructors', description: 'Learn from certified English teachers' },
@@ -142,7 +131,7 @@ export default function Home() {
       <CssBaseline />
       <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
         {/* Navigation Bar */}
-    
+
 
         {/* Hero Section */}
         <Box
@@ -168,15 +157,15 @@ export default function Home() {
               height: '100%',
               objectFit: 'cover',
               zIndex: 0,
-              objectPosition:"top",
+              objectPosition: "top",
             }}
           >
-            <source 
+            <source
               src="assets/english-learning-hero.mp4"
-              type="video/mp4" 
+              type="video/mp4"
             />
           </Box>
-          
+
           {/* Overlay Gradient */}
           <Box
             sx={{
@@ -189,7 +178,7 @@ export default function Home() {
               zIndex: 1,
             }}
           />
-          
+
           <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
             <Grid container spacing={4} alignItems="center">
               <Grid item xs={12} md={6}>
@@ -222,7 +211,7 @@ export default function Home() {
                   </Box>
                 </Stack>
               </Grid>
-             
+
             </Grid>
           </Container>
         </Box>
@@ -237,61 +226,34 @@ export default function Home() {
           </Typography>
 
           <Grid container spacing={4}>
-            {courses.map((course) => (
-              <Grid size={{ xs: 12, md: 4 }}key={course.id}>
-                <Card
-                  sx={{
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    borderRadius: 3,
-                    position: 'relative',
-                    overflow: 'hidden',
-                    boxShadow: 2,
-                    transition: 'transform 250ms ease, box-shadow 250ms ease',
-                    '&:hover': { transform: 'translateY(-8px)', boxShadow: 6 },
-                    bgcolor: 'background.paper',
-                  }}
-                >
-                  {/* Price badge */}
-                  <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}>
-                    <Paper elevation={3} sx={{ px: 2, py: 0.5, bgcolor: 'primary.main', color: 'white', borderRadius: 2 }}>
-                      <Typography sx={{ fontWeight: 'bold' }}>${course.price}</Typography>
-                    </Paper>
-                  </Box>
+            {courses?.map((course) => (
+              <Grid size={{ xs: 12, md: 4 }} key={course.id}>
+                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 2, boxShadow: 1 }}>
+                  <CardContent sx={{ display: 'flex', gap: 2, alignItems: 'flex-start', p: 2 }}>
+                    <Avatar sx={{ bgcolor: 'primary.main', width: 56, height: 56 }}>{course.image}</Avatar>
 
-                  {/* Ribbon for popular */}
-                  {course.popular && (
-                    <Box sx={{ position: 'absolute', left: 0, top: 12, zIndex: 2 }}>
-                      <Paper elevation={0} sx={{ px: 2, py: 0.5, bgcolor: 'secondary.main', color: 'white', borderTopRightRadius: 8, borderBottomRightRadius: 8 }}>
-                        <Typography variant="caption" sx={{ fontWeight: 'bold' }}>Most Popular</Typography>
-                      </Paper>
-                    </Box>
-                  )}
+                    <Box sx={{ flex: 1 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <Box>
+                          <Typography variant="h6" sx={{ fontWeight: 700 }}>{course.name}</Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {course.level} • {course.duration}
+                          </Typography>
+                        </Box>
 
-                  <CardContent sx={{ flex: 1, pt: 6 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                      <Avatar sx={{ bgcolor: 'primary.light', width: 64, height: 64, fontSize: 28 }}>{course.image}</Avatar>
-                      <Box>
-                        <Typography variant="h6" sx={{ fontWeight: 700 }}>{course.name}</Typography>
-                        <Typography variant="caption" color="text.secondary">{course.level}</Typography>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'primary.main' }}>${course.price}</Typography>
                       </Box>
-                    </Box>
 
-                    <Box sx={{ mb: 2 }}>
-                      {course.features.map((feature, i) => (
-                        <Typography key={i} variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                          <Box component="span" sx={{ color: 'primary.main', mr: 1 }}>•</Box>
-                          {feature}
-                        </Typography>
-                      ))}
-                    </Box>
-
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
-                      <Typography variant="body2" color="text.secondary">{course.students} students</Typography>
-                      <Button variant="contained" color="primary">Enroll Now</Button>
+                      <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        {course.description?.slice(0, 120)}{course.description && course.description.length > 120 ? '...' : ''}
+                      </Typography>
                     </Box>
                   </CardContent>
+
+                  <Box sx={{ px: 2, pb: 2, mt: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="caption" color="text.secondary">{course.students || 0} students</Typography>
+                    <Button size="small" variant="contained" color="primary">Enroll</Button>
+                  </Box>
                 </Card>
               </Grid>
             ))}
@@ -310,7 +272,7 @@ export default function Home() {
 
             <Grid container spacing={4}>
               {features.map((feature, index) => (
-                <Grid item size={{ xs: 12, md: 4 }}key={index}>
+                <Grid item size={{ xs: 12, md: 4 }} key={index}>
                   <Card
                     elevation={1}
                     sx={{
@@ -363,7 +325,7 @@ export default function Home() {
         <Container maxWidth="lg" sx={{ py: 8 }} id="about">
           <Grid container spacing={6} alignItems="center">
             {/* Left: Illustration / Visual */}
-           
+
 
             {/* Right: Content */}
             <Grid size={{ xs: 12, md: 12 }}>
@@ -438,7 +400,7 @@ export default function Home() {
             </Typography>
             <Grid container spacing={3}>
               {testimonials.map((testimonial, index) => (
-                <Grid size={{ xs: 12, md: 4 }}key={index}>
+                <Grid size={{ xs: 12, md: 4 }} key={index}>
                   <Paper sx={{ p: 3, bgcolor: 'rgba(255,255,255,0.1)', color: 'white' }}>
                     <Rating value={testimonial.rating} readOnly sx={{ mb: 1, color: '#ffd700' }} />
                     <Typography sx={{ mb: 2, fontStyle: 'italic' }}>
