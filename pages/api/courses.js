@@ -1,57 +1,52 @@
-// GET all courses or POST new course
+// Use SQLite for persistence via lib/db/courses.js
+let dbModule = null;
+let initError = null;
+try {
+  dbModule = require('../../lib/db/courses');
+} catch (err) {
+  initError = err;
+  console.error('DB initialization error:', err);
+}
+
 export default function handler(req, res) {
-  if (req.method === 'GET') {
-    const courses = [
-      {
-        id: 1,
-        name: 'Beginner English',
-        level: 'A1',
-        duration: '8 weeks',
-        price: 99.99,
-        students: 15,
-        description: 'Perfect for absolute beginners',
-      },
-      {
-        id: 2,
-        name: 'Intermediate English',
-        level: 'B1',
-        duration: '10 weeks',
-        price: 129.99,
-        students: 22,
-        description: 'For learners with basic knowledge',
-      },
-      {
-        id: 3,
-        name: 'Advanced English',
-        level: 'C1',
-        duration: '12 weeks',
-        price: 159.99,
-        students: 18,
-        description: 'Advanced grammar and conversation',
-      },
-    ];
-    res.status(200).json({ success: true, data: courses });
-  } else if (req.method === 'POST') {
-    const { name, level, duration, price, description } = req.body;
-
-    if (!name || !level || !duration || !price) {
-      return res
-        .status(400)
-        .json({ success: false, error: 'Missing required fields' });
-    }
-
-    const newCourse = {
-      id: Math.random(),
-      name,
-      level,
-      duration,
-      price,
-      students: 0,
-      description: description || '',
-    };
-
-    res.status(201).json({ success: true, data: newCourse });
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
+  if (!dbModule) {
+    const message = initError ? String(initError.message || initError) : 'Database not initialized. Run `npm install better-sqlite3`.';
+    console.error('Courses API request but DB not ready:', message);
+    return res.status(500).json({ success: false, error: message });
   }
+  if (req.method === 'GET') {
+    try {
+      const data = dbModule.getCourses();
+      return res.status(200).json({ success: true, data });
+    } catch (err) {
+      console.error('GET /api/courses error:', err);
+      return res.status(500).json({ success: false, error: String(err) });
+    }
+  }
+
+  if (req.method === 'POST') {
+    try {
+      const { name, level, duration, price, description } = req.body || {};
+      if (!name || !level || !duration || price === undefined || price === null) {
+        return res.status(400).json({ success: false, error: 'Missing required fields' });
+      }
+
+      const created = dbModule.addCourse({
+        name,
+        level,
+        duration,
+        price: Number(price),
+        students: 0,
+        description: description || '',
+      });
+
+      return res.status(201).json({ success: true, data: created });
+    } catch (err) {
+      console.error('POST /api/courses error:', err);
+      return res.status(500).json({ success: false, error: String(err) });
+    }
+  }
+
+  res.setHeader('Allow', ['GET', 'POST']);
+  return res.status(405).json({ error: 'Method not allowed' });
 }
