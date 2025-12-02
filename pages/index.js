@@ -77,7 +77,7 @@ export default function Home() {
   const [loadingCourses, setLoadingCourses] = useState(false);
   // Fetch courses when courses tab is active
   useEffect(() => {
-   
+
     const fetchCourses = async () => {
       setLoadingCourses(true);
       try {
@@ -90,7 +90,7 @@ export default function Home() {
       }
     };
     fetchCourses();
-  
+
   }, []);
 
   const features = [
@@ -226,7 +226,7 @@ export default function Home() {
           </Typography>
 
           <Grid container spacing={4}>
-            {courses?.map((course) => (
+            {loadingCourses ? <Typography >loadding...</Typography> : courses?.map((course) => (
               <Grid size={{ xs: 12, md: 4 }} key={course.id}>
                 <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 2, boxShadow: 1 }}>
                   <CardContent sx={{ display: 'flex', gap: 2, alignItems: 'flex-start', p: 2 }}>
